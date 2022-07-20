@@ -1,0 +1,3 @@
+insert into cmt_config(environment, project, party, version, download_date, publish_date, zip) values ('Oberunterdumpfing', 'X Files', 'SS Sinking Party', '13', TIMESTAMP '2022-02-03 14:23:11', '15.05.1999', 'avc');
+insert into cmt_config(environment, project, party, version, download_date, publish_date, zip) values ('Schland', 'Automaticus', 'Conformed Conforms', '101', TIMESTAMP '2022-02-03 14:23:11', '16.07.2021', 'pub');
+insert into cmt_config(environment, project, party, version, download_date, publish_date, zip) values ('Commonland', 'Unificando', 'Uniformia', '11', TIMESTAMP '2022-02-03 14:23:11', '22.08.1988', 'bvz');

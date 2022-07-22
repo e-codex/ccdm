@@ -1,0 +1,84 @@
+= CCDM
+
+Cmt Configuration Download Manager
+
+
+== Use Cases
+
+=== Download Configuration
+On user command: The ccdm is able to retrieve the current configuration from the CMT via REST-API call.
+
+=== Deploy Configuration
+
+On user command: The ccdm can deploy the configuration to a specific component (gateway, connector, webserver).
+
+CAUTION: Look at chapter component connection for details which components are supported.
+
+
+
+
+== Architectural Overview
+
+[plantuml,architecture]
+----
+@startuml
+
+
+
+component cmt
+
+rectangle {
+  component ccdm
+    rectangle {
+        component connector
+        component gw
+        component webserver
+    }
+}
+
+ccdm --> cmt : download current configuration
+
+ccdm --> connector : deploy configuration
+ccdm --> gw : deploy configuration
+ccdm --> webserver : deploy configuration
+
+
+@enduml
+----
+
+== DB-Model
+
+[plantuml,db_model]
+----
+@startuml
+
+class CMTConfiguration {
+ id: Integer
+}
+
+class CMTConfigDeploymentOrder {
+}
+
+CMTConfiguration -- CMTConfigDeploymentOrder
+
+
+@enduml
+----
+
+== Supported Components
+
+Currently only p-Mode deployment to the domibus (Version 5.0) AS4 gateway is supported.
+
+=== Gateway
+
+The p-Modes are deployed to GW via REST-API call to
+
+domibus/ext/pmode
+
+for this purpose you have to configure a PluginUser on GW and also configure username, password and gw url on CCDM side.
+
+TODO: describe configuration
+
+
+
+

@@ -4,9 +4,12 @@ plugins {
 	id("org.springframework.boot") version "2.7.1"
 	id("io.spring.dependency-management") version "1.0.11.RELEASE"
 	id("com.vaadin") version "23.1.2"
+	id("org.asciidoctor.jvm.convert") version "3.3.2"
+	id("org.asciidoctor.jvm.pdf") version "3.3.2"
 	kotlin("jvm") version "1.6.21"
 	kotlin("plugin.spring") version "1.6.21"
 	kotlin("plugin.jpa") version "1.6.21"
+
 }
 
 group = "eu.ecodex"
@@ -40,6 +43,13 @@ dependencyManagement {
 	imports {
 		mavenBom("com.vaadin:vaadin-bom:${property("vaadinVersion")}")
 	}
+}
+
+asciidoctorj {
+	getModules().getPdf().version("1.2.3")
+	getModules().getPdf().use()
+	getModules().getDiagram().version("1.5.16")
+	getModules().getDiagram().use()
 }
 
 tasks.withType<KotlinCompile> {

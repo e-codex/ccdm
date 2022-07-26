@@ -38,6 +38,9 @@ dependencies {
 	runtimeOnly("org.springframework.boot:spring-boot-devtools")
 	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	implementation("com.github.mvysny.karibudsl:karibu-dsl:1.0.1")
+	//implementation("eu.vaadinonkotlin:vok-framework-v10-vokdb:0.8.1")
+	//source: https://search.maven.org/artifact/eu.vaadinonkotlin/vok-framework-v10-vokdb/0.8.1/jar
 }
 
 dependencyManagement {

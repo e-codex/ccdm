@@ -15,7 +15,7 @@ data class CMTConfiguration (
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         @Column(name = "config_id")
-        val configId: Int?=null,
+        val configId: Int? = null,
 
         @OneToMany(cascade = arrayOf(CascadeType.ALL),
                 mappedBy = "config",
@@ -37,6 +37,9 @@ data class CMTConfiguration (
         @Column(name = "version")
         val version: String,
 
+        @Column(name = "go_live_date")
+        val goLiveDate: LocalDateTime,
+
         @Column(name = "download_date")
         val downloadDate: LocalDateTime,
 
@@ -44,7 +47,6 @@ data class CMTConfiguration (
         val publishDate: LocalDateTime,
 
         @Column(name = "zip")
-
         val zip: String
         ) {
 

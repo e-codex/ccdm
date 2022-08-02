@@ -63,6 +63,17 @@ https://youtu.be/bxy2JgqqKDU
 Kotlin vs. Java:
 https://www.kotlinvsjava.com/
 
+Look up data provider:
+https://vaadin.com/docs/v14/flow/binding-data/tutorial-flow-data-provider
+
+Spring WebClient:
+https://www.baeldung.com/spring-5-webclient
+
+Possibly accessing token:
+https://stackoverflow.com/questions/57213636/how-can-i-get-access-token-from-json-data
+
+
+
 To check:
 localhost:8080
 in browser

@@ -7,3 +7,11 @@ insert into cmt_config(config_id, environment, project, party, version, download
 insert into config_deploy(deploy_id, deployment_date, component, principal) values (1, TIMESTAMP '2022-05-02 15:25:11', 'GUI', 'Art Vandelay');
 insert into config_deploy(deploy_id, deployment_date, component, principal) values (2, TIMESTAMP '1998-08-15 07:36:54', 'CLI', 'Susan Ross');
 insert into config_deploy(deploy_id, deployment_date, component, principal) values (3, TIMESTAMP '1979-03-24 04:03:47', 'Computer', 'Mr vanDudenheim');
+
+insert into cmt_project(id, name, description) values (1, 'Project Fuzzy Boots', 'Something with Wings');
+insert into cmt_project(id, name, description) values (2, 'Project Vandeleigh', 'Something with Art');
+insert into cmt_project(id, name, description) values (3, 'Project Thunderlight', 'Something with Bluetooth');
+
+insert into cmt_use_case(id, name, type, fk_project_id) values (1, 'Project Vandeleigh', 'Musical', 1);
+insert into cmt_use_case(id, name, type, fk_project_id) values (2, 'Project Thunderlight', 'Arts & Crafts', 1);
+insert into cmt_use_case(id, name, type, fk_project_id) values (3, 'Project Fuzzy Boots', 'Tech', 3);

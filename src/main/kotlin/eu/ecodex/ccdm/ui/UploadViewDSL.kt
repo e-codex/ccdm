@@ -17,24 +17,14 @@ class UploadViewDSL: KComposite() {
             }
             formLayout {
                 responsiveSteps = mutableListOf(FormLayout.ResponsiveStep("0", 1))
-                horizontalAlignSelf = FlexComponent.Alignment.START
-                formItem {
-                    horizontalLayout {
-                        comboBox<String> (label = "Use Case") {
-                        } }
-                }
-                formItem {
-                    horizontalLayout {
-                        comboBox<String>(label = "Stage") {
-                        }
-                    }
-                }
+                addFormItem(comboBox<String>(), "Use Case")
+                addFormItem(comboBox<String>(), "Stage")
             }
             // for grid: (dataProvider = CMTConfiguration.dataProvider)
             // write new config & dao for dataProvider
-           //grid {
-           //    setSizeFull()
-           //}
+            //grid {
+            //    setSizeFull()
+            //}
         }
     }
 }

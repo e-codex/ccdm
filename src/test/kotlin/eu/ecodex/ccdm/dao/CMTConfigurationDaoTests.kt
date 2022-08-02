@@ -30,13 +30,15 @@ class CMTConfigurationDaoTests {
     fun testSave() {
         val newDao = CMTConfiguration(
                 configId = 4,
+                cmtName = "econimus",
                 environment = "Downunder",
                 project = "FuzzyLogic",
                 party = "Confusio",
                 version = "99",
                 downloadDate = LocalDateTime.now(),
                 publishDate = LocalDateTime.of(2020, 8, 3, 0, 0),
-                zip = "asdf")
+                zip = "asdf".toByteArray(),
+                goLiveDate = LocalDateTime.now())
         dao.save(newDao)
 
         assertThat(newDao.configId).isNotNull()
@@ -52,14 +54,12 @@ class CMTConfigurationDaoTests {
     @Sql("/deleteDB.sql")
     @Sql("/testdata.sql")
     fun testDeleteById() {
-
        /* println( dao.count())
         println( dao.findAll())*/
         dao.deleteById(2)
        /* println( dao.count())
         println( dao.findAll())*/
         assertEquals(2, dao.findAll().size)
-
     }
 
     @Test

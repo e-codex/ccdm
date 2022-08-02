@@ -14,5 +14,6 @@ interface CMTConfigurationDao : JpaRepository<CMTConfiguration, Int?> {
     @Query("select c from CMTConfiguration c where c.publishDate < ?1")
     fun sqlFindByPublishDateBefore(day: LocalDateTime): List <CMTConfiguration>
 
+    fun findByCmtName(cmtName: String): List<CMTConfiguration>
 
 }

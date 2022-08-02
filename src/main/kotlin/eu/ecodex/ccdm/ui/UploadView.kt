@@ -21,7 +21,9 @@ class UploadView(configDao: CMTConfigurationDao): VerticalLayout()  {
         syncButtonLayout.alignItems = Alignment.END
 
         val useCase = ComboBox<String>()
+        // = project
         val stage = ComboBox<String>()
+        // = environment
 
         val formLayout = FormLayout()
         // to make formLayout only display 1 column, consisting of description and ComboBox:

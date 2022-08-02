@@ -10,6 +10,8 @@ plugins {
 	kotlin("plugin.spring") version "1.6.21"
 	kotlin("plugin.jpa") version "1.6.21"
 
+	kotlin("kapt") version "1.7.10"
+
 }
 
 group = "eu.ecodex"
@@ -37,10 +39,20 @@ dependencies {
 	runtimeOnly("com.h2database:h2")
 	runtimeOnly("org.springframework.boot:spring-boot-devtools")
 	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+	//kapt("org.springframework.boot:spring-boot-configuration-processor")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	implementation("com.github.mvysny.karibudsl:karibu-dsl:1.0.1")
 	//implementation("eu.vaadinonkotlin:vok-framework-v10-vokdb:0.8.1")
 	//source: https://search.maven.org/artifact/eu.vaadinonkotlin/vok-framework-v10-vokdb/0.8.1/jar
+
+	implementation("org.springframework.boot:spring-boot-starter-webflux")
+
+
+	//implementation ("org.springframework.boot:spring-boot-starter-security")
+	//testImplementation ("org.springframework.security:spring-security-test")
+//	implementation ("org.springframework.boot:spring-boot-starter-data-r2dbc")
+//	runtimeOnly ("io.r2dbc:r2dbc-h2")
+
 }
 
 dependencyManagement {

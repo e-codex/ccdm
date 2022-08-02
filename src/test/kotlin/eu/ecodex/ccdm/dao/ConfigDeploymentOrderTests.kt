@@ -29,13 +29,15 @@ class ConfigDeploymentOrderTests {
         println(deployDao.findAll())
         val newConfig = CMTConfiguration(
                 configId = 5,
+                cmtName = "oiconimus",
                 environment = "Space",
                 project = "Xilon",
                 party = "CMTParty",
                 version = "255",
                 downloadDate = LocalDateTime.now(),
                 publishDate = LocalDateTime.of(1992, 4, 15, 0, 0),
-                zip = "asdf")
+                zip = "asdf".toByteArray(),
+                goLiveDate = LocalDateTime.now())
         val newOrder = ConfigDeploymentOrder(
                 deployId = 5,
                 deploymentDate = LocalDateTime.now(),

@@ -1,0 +1,21 @@
+spec:
+  resources:
+    limits:
+      cpu: "100m"
+      memory: "256Mi"
+    requests:
+      cpu: "200m"
+      memory: "512Mi"
+  output:
+    to:
+      kind: ImageStreamTag
+      name: "ccdm:latest"
+      namespace: "ju-eu-ejustice-eqs"
+  strategy:
+    type: Source
+    sourceStrategy:
+      from:
+        kind: ImageStreamTag
+        name: 'quay.io/jkube/jkube-java:0.0.15'
+      pullSecret:
+        name: pullsecret-jkube

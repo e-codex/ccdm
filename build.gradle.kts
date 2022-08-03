@@ -6,6 +6,7 @@ plugins {
 	id("com.vaadin") version "23.1.2"
 	id("org.asciidoctor.jvm.convert") version "3.3.2"
 	id("org.asciidoctor.jvm.pdf") version "3.3.2"
+	id("org.eclipse.jkube.openshift") version "1.8.0"
 	kotlin("jvm") version "1.6.21"
 	kotlin("plugin.spring") version "1.6.21"
 	kotlin("plugin.jpa") version "1.6.21"

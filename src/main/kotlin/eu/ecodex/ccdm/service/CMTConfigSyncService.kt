@@ -2,6 +2,7 @@ package eu.ecodex.ccdm.service
 
 import elemental.json.Json
 import eu.ecodex.ccdm.dao.CMTConfigurationDao
+import eu.ecodex.ccdm.dao.CMTPartyDao
 import eu.ecodex.ccdm.entity.CMTConfiguration
 import eu.ecodex.ccdm.entity.CMTParty
 import org.slf4j.Logger
@@ -14,7 +15,11 @@ import java.time.LocalDateTime
 import java.util.*
 
 @Service
-class CMTConfigSyncService (private val config: CMTConfigSyncServiceConfigurationProperties, private val cmtConfigDao: CMTConfigurationDao) {
+class CMTConfigSyncService (
+        private val config: CMTConfigSyncServiceConfigurationProperties,
+        private val cmtConfigDao: CMTConfigurationDao,
+        private val partyDao: CMTPartyDao
+) {
 
     val logger: Logger = LoggerFactory.getLogger(CMTConfigSyncService::class.java)
 
@@ -24,6 +29,7 @@ class CMTConfigSyncService (private val config: CMTConfigSyncServiceConfiguratio
 
     private val cmtClient = WebClient.builder()
             .baseUrl(config.cmtUrl)
+            .codecs { configurer -> configurer.defaultCodecs().maxInMemorySize(1024 * 10000) }
             .build()
 
     fun getToken(): String {
@@ -41,7 +47,7 @@ class CMTConfigSyncService (private val config: CMTConfigSyncServiceConfiguratio
         val parsedJson = Json.parse(block.block())
         val parsedToken = parsedJson.getString("access_token")
 
-        logger.trace("Retrieved authentication token: $parsedToken")
+        logger.trace("Retrieved authentication token: [{}]", parsedToken)
 
         return parsedToken
 
@@ -63,22 +69,39 @@ class CMTConfigSyncService (private val config: CMTConfigSyncServiceConfiguratio
             temp.addAll(downloadedPartyList)
         }
 
-        logger.info("Retrieved parties: $temp ; Number of parties: ${temp.count()}")
+        logger.trace("Retrieved parties: $temp ; Number of parties: ${temp.count()}")
 
         return temp
     }
 
-    fun getParties(parties: List<CMTParty>): CMTParty {
+    @Transactional
+    fun syncPartiesToDB() {
+        val parties = downloadPartyList()
 
-        var singleParty = CMTParty()
         parties.forEach  { party ->
-            singleParty = party
-            return singleParty
+            val p = CMTParty(partyId = party.partyId,
+            partyIdTypeKey = party.partyIdTypeKey,
+            partyIdTypeValue =  party.partyIdTypeValue)
+
+            //TODO: nur NEUE party in DB speichern -> check if other
+            partyDao.save(p)
         }
-        return singleParty
+
     }
 
-    fun downloadParticipantListForParty(party: CMTParty) {
+    fun synchronise() {
+        val partyList = downloadPartyList()
+        partyList.forEach { p ->
+            logger.debug("Synchronising Party [{}]", p)
+            val participationList = downloadParticipantListForParty(p)
+            participationList.forEach{ part ->
+                logger.debug("Synchronising Participation [{}]", part)
+                synchroniseCMTConfig(part)
+            }
+        }
+    }
+
+    fun downloadParticipantListForParty(party: CMTParty): MutableList<ParticipationParams> {
 
         // : MutableList<ParticipationParams>
         val downloadedParticipants = cmtClient.get().uri { uriBuilder ->
@@ -86,29 +109,30 @@ class CMTConfigSyncService (private val config: CMTConfigSyncServiceConfiguratio
                     //.queryParam("partyId", "AT")
                     //.queryParam("partyIdType", "urn:oasis:names:tc:ebcore:partyid-type:ecodex")
                     .build()
+            // pass parameters to build()? See: https://www.baeldung.com/webflux-webclient-parameters
         }
                 .header("Authorization", "Bearer " + getToken())
                 .retrieve()
-                .bodyToFlux(String::class.java)
+                .bodyToFlux(ParticipationDTO::class.java)
+                .map { dtoParams ->
+                    val p = ParticipationParams()
+                    p.environment = dtoParams.environment
+                    p.project = dtoParams.project
+                    p.partyId = party.partyId
+                    p.partyIdType = party.partyIdTypeValue
+                    p
+                }
                 .collectList()
                 .block()
 
-        /*val participationParams = ParticipationParams (
-                partyId = party.partyId,
-                partyIdType = party.partyIdTypeValue,
-                listOf(environment = downloadedParticipants.get().environment,
-                project = downloadedParticipants.get().project)
-                )
-        */
-
-        /*val temp = mutableListOf<ParticipationParams>()
+        val temp = mutableListOf<ParticipationParams>()
         if (downloadedParticipants != null) {
             temp.addAll(downloadedParticipants)
-        }*/
+        }
 
         logger.info("Retrieved participants: $downloadedParticipants ; Number of participants: ${downloadedParticipants?.count()}}")
 
-        //return temp
+        return temp
     }
 
     private fun downloadPModeList(params: ParticipationParams): MutableList<PMode> {
@@ -136,15 +160,46 @@ class CMTConfigSyncService (private val config: CMTConfigSyncServiceConfiguratio
         //logger.info(stringToReturn.block().toString())
     }
 
-    private fun PMode.toCMTConfiguration(zip: ByteArray) = CMTConfiguration(
+    private fun mapPModeToCMTConfiguration(
+            name: String,
+            version: String,
+            zip: ByteArray,
+            environment: String,
+            project: String,
+            partyId: String,
+            partyIdType: String,
+            pMode: PMode
+    ): CMTConfiguration {
+        return CMTConfiguration(
+                cmtName = name,
+                version = version,
+                environment = environment,
+                project = project,
+                partyId = partyId,
+                partyIdType = partyIdType,
+                goLiveDate = LocalDateTime.now(),
+                downloadDate = LocalDateTime.now(),
+                publishDate = pMode.creationDate,
+                zip = zip
+        )
+    }
+    private fun PMode.toCMTConfiguration(
+            zip: ByteArray,
+            environment: String,
+            project: String,
+            partyId: String,
+            partyIdType: String,
+            pMode: PMode
+            ) = CMTConfiguration(
             cmtName = name,
             version = version,
-            environment = "",
-            project = "",
-            party = "",
+            environment = environment,
+            project = project,
+            partyId = partyId,
+            partyIdType = partyIdType,
             goLiveDate = LocalDateTime.now(),
             downloadDate = LocalDateTime.now(),
-            publishDate = LocalDateTime.now(),
+            publishDate = pMode.creationDate,
             zip = zip
             )
 
@@ -173,10 +228,34 @@ class CMTConfigSyncService (private val config: CMTConfigSyncServiceConfiguratio
     fun synchroniseCMTConfig(params: ParticipationParams) {
         downloadPModeList(params).forEach { pMode ->
             if (cmtConfigDao.findByCmtName(pMode.name).isEmpty()) {
-                val pModeToSave = pMode.toCMTConfiguration(downloadZip(pMode, params))
+                // PMode.toCMTConfiguration(
+                //            zip: ByteArray,
+                //            environment: String,
+                //            project: String,
+                //            party: String,
+                //            pMode: PMode
+                //            )
+                val pModeToSave = mapPModeToCMTConfiguration(
+                        zip = downloadZip(pMode, params),
+                        environment = params.environment,
+                        project = params.project,
+                        partyId = params.partyId,
+                        pMode = pMode,
+                        name = pMode.name,
+                        partyIdType = params.partyIdType,
+                        version = pMode.version
+                )
                 cmtConfigDao.save(pModeToSave)
             }
         }
+    }
+
+    class ParticipationDTO () {
+
+        var environment: String = ""
+        var project: String = ""
+        var useCases: Array<String> = arrayOf()
+
     }
 
     // Button mit Funktion hinterlegen

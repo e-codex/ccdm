@@ -26,19 +26,22 @@ data class CMTConfiguration (
         // https://stackoverflow.com/questions/2584521/what-is-the-inverse-side-of-the-association-in-a-bidirectional-jpa-onetomany-m
 
         @Column(name = "cmt_name")
-        val cmtName: String,
+        val cmtName: String = "",
 
         @Column(name = "environment")
-        val environment: String,
+        val environment: String = "",
 
         @Column(name = "project")
-        val project: String,
+        val project: String = "",
 
-        @Column(name = "party")
-        val party: String,
+        @Column(name = "party_id")
+        val partyId: String = "",
+
+        @Column(name = "party_id_type")
+        val partyIdType: String = "",
 
         @Column(name = "version")
-        val version: String,
+        val version: String = "",
 
         @Column(name = "go_live_date")
         val goLiveDate: LocalDateTime,

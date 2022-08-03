@@ -32,7 +32,7 @@ class ConfigDeploymentOrderTests {
                 cmtName = "oiconimus",
                 environment = "Space",
                 project = "Xilon",
-                party = "CMTParty",
+                partyId = "CMTParty",
                 version = "255",
                 downloadDate = LocalDateTime.now(),
                 publishDate = LocalDateTime.of(1992, 4, 15, 0, 0),

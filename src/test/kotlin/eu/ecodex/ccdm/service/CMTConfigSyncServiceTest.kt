@@ -35,7 +35,7 @@ import org.springframework.test.context.jdbc.Sql
     @Sql("classpath:deleteDB.sql")
     fun synchronisePModeListTest() {
         val params = ParticipationParams(
-                partyId = "5",
+                partyId = "AT",
                 partyIdType = "asdf",
                 environment = "home",
                 project = "test project"
@@ -50,8 +50,8 @@ import org.springframework.test.context.jdbc.Sql
     }
 
     @Test
-    fun downloadParticipantListTest () {
-        service.downloadParticipantListForParty(service.getParties(service.downloadPartyList()))
+    fun synchronisePartyWithDb () {
+        service.syncPartiesToDB();
     }
 
 }

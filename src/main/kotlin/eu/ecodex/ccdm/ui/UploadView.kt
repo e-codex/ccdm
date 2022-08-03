@@ -1,5 +1,6 @@
 package eu.ecodex.ccdm.ui
 
+import com.github.mvysny.karibudsl.v10.onLeftClick
 import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.combobox.ComboBox
 import com.vaadin.flow.component.formlayout.FormLayout
@@ -11,13 +12,16 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout
 import com.vaadin.flow.router.Route
 import eu.ecodex.ccdm.dao.CMTConfigurationDao
 import eu.ecodex.ccdm.entity.CMTConfiguration
+import eu.ecodex.ccdm.service.CMTConfigSyncService
 
 @Route(value = "/upload", layout = MainUI::class)
-class UploadView(configDao: CMTConfigurationDao): VerticalLayout()  {
+class UploadView(configDao: CMTConfigurationDao,
+                 cmtSyncService: CMTConfigSyncService): VerticalLayout()  {
 
     init {
         val syncButton = Button(VaadinIcon.REFRESH.create())
         val syncButtonLayout = VerticalLayout(syncButton)
+        syncButton.onLeftClick { cmtSyncService.synchronise() }
         syncButtonLayout.alignItems = Alignment.END
 
         val useCase = ComboBox<String>()
@@ -47,7 +51,7 @@ class UploadView(configDao: CMTConfigurationDao): VerticalLayout()  {
             }
         }
         //grid.setItems(listOf(CMTConfiguration(configId = 2)))
-        grid.setItems(configDao.findAll())
+        //grid.setItems(configDao.findAll())
 
         add(syncButtonLayout, formLayout, grid)
     }

@@ -20,7 +20,7 @@ data class CMTConfiguration (
         @OneToMany(cascade = arrayOf(CascadeType.ALL),
                 mappedBy = "config",
                 orphanRemoval = true)
-        val configDeployments: MutableList<ConfigDeploymentOrder> = ArrayList (),
+        val configDeployments: MutableList<DeploymentOrder> = ArrayList (),
         //https://stackoverflow.com/questions/50815189/how-to-initialize-an-empty-arraylist-in-kotlin
         //Continue with mappedBy error:
         // https://stackoverflow.com/questions/2584521/what-is-the-inverse-side-of-the-association-in-a-bidirectional-jpa-onetomany-m

@@ -1,7 +1,7 @@
 package eu.ecodex.ccdm.dao
 
 import eu.ecodex.ccdm.entity.CMTConfiguration
-import eu.ecodex.ccdm.entity.ConfigDeploymentOrder
+import eu.ecodex.ccdm.entity.DeploymentOrder
 import org.assertj.core.api.AssertionsForInterfaceTypes.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -14,7 +14,7 @@ import java.time.LocalDateTime
 class ConfigDeploymentOrderTests {
 
     @Autowired
-    lateinit var deployDao: ConfigDeploymentOrderDao
+    lateinit var deployDao: DeploymentOrderDao
 
     @Test
     @Sql("/deleteDB.sql")
@@ -38,17 +38,16 @@ class ConfigDeploymentOrderTests {
                 publishDate = LocalDateTime.of(1992, 4, 15, 0, 0),
                 zip = "asdf".toByteArray(),
                 goLiveDate = LocalDateTime.now())
-        val newOrder = ConfigDeploymentOrder(
-                deployId = 5,
+        val newOrder = DeploymentOrder(
+                id = 5,
                 deploymentDate = LocalDateTime.now(),
-                component = "Satellite",
                 principal = "Neil Armstrong",
                 config = newConfig
         )
         newConfig.configDeployments.add(newOrder)
         deployDao.save((newOrder))
         //println(deployDao.findAll())
-        assertThat(newOrder.deployId).isNotNull()
+        assertThat(newOrder.id).isNotNull()
     }
 
     @Test

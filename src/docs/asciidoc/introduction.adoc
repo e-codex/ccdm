@@ -46,24 +46,7 @@ ccdm --> webserver : deploy configuration
 @enduml
 ----
 
-== DB-Model
 
-[plantuml,db_model]
-----
-@startuml
-
-class CMTConfiguration {
- id: Integer
-}
-
-class CMTConfigDeploymentOrder {
-}
-
-CMTConfiguration -- CMTConfigDeploymentOrder
-
-
-@enduml
-----
 
 == Supported Components
 

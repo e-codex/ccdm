@@ -1,0 +1,37 @@
+= U2 Create Deployment Order
+
+As a user I can create a deployment order for a specific PMode, environment and components.
+
+As a user I can schedule a deployment order for a specific date (by default go-Live Date of P-Modes or publish date + 7 days (as long as publish date is not part of CMT Rest-API)).
+
+The CCDM has to be able to execute the deployment order at a specific date/time. And should save the result.
+
+== Create New Deploymentorder View
+
+[plantuml,create_deployment_order_ui]
+----
+@startsalt
+
+{
+  Create Deployment Order
+
+  Environment: | ^PROD, ACCEPTANCE, TEST^
+  PMode: |  "<PMode Name>"
+  GoLiveDate: | "2022-08-01"
+
+  Component: | ^GW, CONNECTOR, WEBSERVER, FW^
+
+  [cancel] | [schedule]
+
+}
+
+@endsalt
+----
+
+* Component: MultiSelectBox with all available Components
+* Environment: MultiSelectBox with all available Environments
+
+== List Deploymentorder View
+
+A view which shows the user all deployment orders and their state.
+

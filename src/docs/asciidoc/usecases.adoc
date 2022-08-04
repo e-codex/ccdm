@@ -1,0 +1,54 @@
+= Use Cases
+
+
+== U1 Configuration Download
+
+As a user I can download the configuration on CMT, so that I have overview of available CMT configurations.
+
+
+
+include::usecases/usecase_u2.adoc[leveloffset=+2]
+
+
+== U3  Execute Deployment Order
+
+As ccdm i can execute a deployment order for a specific PMode,  environment and component. Afterwards the result (SUCCESS, WARNING, FAILED) is recorded in DB.
+
+**Possible Deployment Results**
+
+* ONLY SUCCESS means successfully uploaded
+* WARNING means a error has occured, but change was never applied applied on component or rolled back.
+* FAILED means the component/configuration might be in an inconsistent state!
+
+
+=== U3.C1 Execute Deployment Order (Component 1 / Gateway)
+
+As ccdm i can execute a deployment order for a specific PMode,  environment and component.
+
+==== U3.C1.A1
+
+TODO: define GW upload
+
+
+== Glossar
+
+=== Component
+
+A component can either be a
+
+* Component: eCodex Connector (DomibusConnector)
+** PMode XML
+** Trusted Connectors
+* Component: AS4 Gateway (Domibus)
+** PMode XML
+** Trusted Gateways
+** Trusted Webservers
+* Component: Webserver (Apache)
+* Component: Firewall
+** Firewall Configuration
+
+
+
+
+
+

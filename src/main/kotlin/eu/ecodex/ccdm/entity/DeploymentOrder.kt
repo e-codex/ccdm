@@ -4,13 +4,13 @@ import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity
-@Table(name = "config_deploy")
-data class ConfigDeploymentOrder(
+@Table(name = "deployment_order")
+data class DeploymentOrder(
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        @Column(name = "deploy_id")
-        val deployId: Int?=null,
+        @Column(name = "id")
+        val id: Int?=null,
 
         @ManyToOne(fetch = FetchType.LAZY, cascade = arrayOf(CascadeType.ALL))
         @JoinColumn(name = "config_id")
@@ -19,11 +19,14 @@ data class ConfigDeploymentOrder(
         @Column(name = "deployment_date")
         val deploymentDate: LocalDateTime,
 
-        @Column(name = "component")
-        val component: String,
-
         @Column(name = "principal")
         val principal: String,
+
+        @OneToMany(cascade = arrayOf(CascadeType.ALL),
+                orphanRemoval = true)
+        @JoinColumn(name = "fk_deployment_order", referencedColumnName = "id", nullable = false)
+        val componentDeploymentOrder: MutableList<ComponentDeploymentOrder> = ArrayList()
+
 
         /*
         DB Design abbilden

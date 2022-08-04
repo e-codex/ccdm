@@ -30,10 +30,20 @@ class CMTConfiguration {
 
 }
 
-class CMTConfigDeploymentOrder {
+class DeploymentOrder {
+  id: Integer
+  //scheduled deployment date
+  deploymentDate: LocalDateTime
+  principal: String
 }
 
-CMTConfiguration -- CMTConfigDeploymentOrder
+class ComponentDeploymentOrder {
+  id: Integer
+  component: String
+}
+
+CMTConfiguration -- DeploymentOrder
+DeploymentOrder --o ComponentDeploymentOrder
 
 
 @enduml

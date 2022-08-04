@@ -6,7 +6,7 @@ As a user I can schedule a deployment order for a specific date (by default go-L
 
 The CCDM has to be able to execute the deployment order at a specific date/time. And should save the result.
 
-== New Deploymentorder View
+== Create New Deploymentorder View
 
 [plantuml,create_deployment_order_ui]
 ----
@@ -21,6 +21,7 @@ The CCDM has to be able to execute the deployment order at a specific date/time.
 
   Component: | ^GW, CONNECTOR, WEBSERVER, FW^
 
+  [cancel] | [schedule]
 
 }
 
@@ -29,4 +30,8 @@ The CCDM has to be able to execute the deployment order at a specific date/time.
 
 * Component: MultiSelectBox with all available Components
 * Environment: MultiSelectBox with all available Environments
+
+== List Deploymentorder View
+
+A view which shows the user all deployment orders and their state.
 

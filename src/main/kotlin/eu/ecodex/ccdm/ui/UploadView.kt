@@ -16,24 +16,26 @@ import eu.ecodex.ccdm.service.CMTConfigSyncService
 
 @Route(value = "/upload", layout = MainUI::class)
 class UploadView(configDao: CMTConfigurationDao,
-                 cmtSyncService: CMTConfigSyncService): VerticalLayout()  {
+                 cmtSyncService: CMTConfigSyncService,
+                 ): VerticalLayout()  {
 
     init {
         val syncButton = Button(VaadinIcon.REFRESH.create())
         val syncButtonLayout = VerticalLayout(syncButton)
         syncButton.onLeftClick { cmtSyncService.synchronise() }
+        // in thread ausladen
+        // asynchron/non-blocking ausführen
+        // wenn fertig geladen, Tabelle neu laden
+        // für grid data provider schreiben!
         syncButtonLayout.alignItems = Alignment.END
 
-        val useCase = ComboBox<String>()
-        // = project
-        val stage = ComboBox<String>()
-        // = environment
+        val project = ComboBox<String>()
+        val environment = ComboBox<String>()
 
         val formLayout = FormLayout()
-        // to make formLayout only display 1 column, consisting of description and ComboBox:
         formLayout.responsiveSteps = mutableListOf(FormLayout.ResponsiveStep("0", 1))
-        formLayout.addFormItem(useCase, "Use Case")
-        formLayout.addFormItem(stage, "Stage")
+        formLayout.addFormItem(project, "Project")
+        formLayout.addFormItem(environment, "Environment")
 
         val grid = Grid(CMTConfiguration::class.java)
         grid.addClassName("cmtConfig-grid")
@@ -44,14 +46,15 @@ class UploadView(configDao: CMTConfigurationDao,
         grid.isAllRowsVisible = true
         grid.columns.forEach() { col -> col.setAutoWidth(true) }
 
-        // how to assign number for each column?
+        // if label for Deployment column needed: probably need to change to addColumn and add ComponentRenderer instead of addComponentColumn,
+        // see code: https://vaadin.com/docs/latest/components/grid/#dynamic-height
         grid.addComponentColumn {
             Button(Icon("lumo", "chevron-right")) {
                 println(it)
             }
         }
         //grid.setItems(listOf(CMTConfiguration(configId = 2)))
-        //grid.setItems(configDao.findAll())
+        grid.setItems(configDao.findAll())
 
         add(syncButtonLayout, formLayout, grid)
     }

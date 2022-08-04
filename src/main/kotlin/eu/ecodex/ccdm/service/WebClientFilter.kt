@@ -24,4 +24,18 @@ class WebClientFilter {
 
     // https://www.baeldung.com/spring-webclient-filters
 
+    /*private fun filterFunction(): ExchangeFilterFunction { (request: ClientRequest, next: ExchangeFunction) ->
+        if(parsedToken.isEmpty()) {
+            webClientTryout()
+        }
+        next.exchange(request)
+    }*/
+
+    /*var filterFunction = ExchangeFilterFunction { request: ClientRequest, next: ExchangeFunction ->
+        if(parsedToken.isEmpty()) {
+            webClientTryout()
+        }
+        next.exchange(request)
+    }*/
+
 }

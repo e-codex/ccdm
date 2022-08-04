@@ -5,8 +5,12 @@ import eu.ecodex.ccdm.dao.CMTConfigurationDao
 import eu.ecodex.ccdm.dao.CMTPartyDao
 import eu.ecodex.ccdm.entity.CMTConfiguration
 import eu.ecodex.ccdm.entity.CMTParty
+import eu.ecodex.ccdm.service.cmtclient.PModeDTO
+import eu.ecodex.ccdm.service.cmtclient.ParticipationParamsDTO
+import eu.ecodex.ccdm.service.cmtclient.ZipDataDTO
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.data.domain.Example
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.reactive.function.BodyInserters
@@ -69,7 +73,7 @@ class CMTConfigSyncService (
             temp.addAll(downloadedPartyList)
         }
 
-        logger.trace("Retrieved parties: $temp ; Number of parties: ${temp.count()}")
+        logger.trace("Retrieved parties: [{}] ; Number of parties: [{}]", temp, temp.count())
 
         return temp
     }
@@ -79,14 +83,17 @@ class CMTConfigSyncService (
         val parties = downloadPartyList()
 
         parties.forEach  { party ->
-            val p = CMTParty(partyId = party.partyId,
-            partyIdTypeKey = party.partyIdTypeKey,
-            partyIdTypeValue =  party.partyIdTypeValue)
 
-            //TODO: nur NEUE party in DB speichern -> check if other
-            partyDao.save(p)
+            val p = CMTParty(
+                    partyId = party.partyId,
+                    partyIdTypeKey = party.partyIdTypeKey,
+                    partyIdTypeValue =  party.partyIdTypeValue
+            )
+
+            if(!partyDao.exists(Example.of(p))) {
+                partyDao.save(p)
+            }
         }
-
     }
 
     fun synchronise() {
@@ -101,9 +108,8 @@ class CMTConfigSyncService (
         }
     }
 
-    fun downloadParticipantListForParty(party: CMTParty): MutableList<ParticipationParams> {
+    fun downloadParticipantListForParty(party: CMTParty): MutableList<ParticipationParamsDTO> {
 
-        // : MutableList<ParticipationParams>
         val downloadedParticipants = cmtClient.get().uri { uriBuilder ->
             uriBuilder.path("/participation/list/${party.partyId}/${party.partyIdTypeValue}")
                     //.queryParam("partyId", "AT")
@@ -115,7 +121,7 @@ class CMTConfigSyncService (
                 .retrieve()
                 .bodyToFlux(ParticipationDTO::class.java)
                 .map { dtoParams ->
-                    val p = ParticipationParams()
+                    val p = ParticipationParamsDTO()
                     p.environment = dtoParams.environment
                     p.project = dtoParams.project
                     p.partyId = party.partyId
@@ -125,19 +131,19 @@ class CMTConfigSyncService (
                 .collectList()
                 .block()
 
-        val temp = mutableListOf<ParticipationParams>()
+        val temp = mutableListOf<ParticipationParamsDTO>()
         if (downloadedParticipants != null) {
             temp.addAll(downloadedParticipants)
         }
 
-        logger.info("Retrieved participants: $downloadedParticipants ; Number of participants: ${downloadedParticipants?.count()}}")
+        logger.trace("Retrieved participants: $downloadedParticipants ; Number of participants: ${downloadedParticipants?.count()}}")
 
         return temp
     }
 
-    private fun downloadPModeList(params: ParticipationParams): MutableList<PMode> {
+    private fun downloadPModeList(params: ParticipationParamsDTO): MutableList<PModeDTO> {
 
-        val downloadedPModeList = cmtClient.get().uri { uriBuilder ->
+        val downloadedPModeDTOList = cmtClient.get().uri { uriBuilder ->
             uriBuilder.path("/pmode/list").queryParam("partyId", params.partyId)
                     .queryParam("partyIdType", params.partyIdType)
                     .queryParam("environment", params.environment)
@@ -145,13 +151,13 @@ class CMTConfigSyncService (
                     .build() }
                 .header("Authorization", "Bearer " + getToken())
                 .retrieve()
-                .bodyToFlux(PMode::class.java)
+                .bodyToFlux(PModeDTO::class.java)
                 .collectList()
                 .block()
 
-        val temp = mutableListOf<PMode>()
-        if (downloadedPModeList != null) {
-            temp.addAll(downloadedPModeList)
+        val temp = mutableListOf<PModeDTO>()
+        if (downloadedPModeDTOList != null) {
+            temp.addAll(downloadedPModeDTOList)
         }
 
         return temp
@@ -168,7 +174,7 @@ class CMTConfigSyncService (
             project: String,
             partyId: String,
             partyIdType: String,
-            pMode: PMode
+            pMode: PModeDTO
     ): CMTConfiguration {
         return CMTConfiguration(
                 cmtName = name,
@@ -183,27 +189,8 @@ class CMTConfigSyncService (
                 zip = zip
         )
     }
-    private fun PMode.toCMTConfiguration(
-            zip: ByteArray,
-            environment: String,
-            project: String,
-            partyId: String,
-            partyIdType: String,
-            pMode: PMode
-            ) = CMTConfiguration(
-            cmtName = name,
-            version = version,
-            environment = environment,
-            project = project,
-            partyId = partyId,
-            partyIdType = partyIdType,
-            goLiveDate = LocalDateTime.now(),
-            downloadDate = LocalDateTime.now(),
-            publishDate = pMode.creationDate,
-            zip = zip
-            )
 
-    private fun downloadZip(pMode: PMode, params: ParticipationParams): ByteArray {
+    private fun downloadZip(pMode: PModeDTO, params: ParticipationParamsDTO): ByteArray {
         val downloadedZip = cmtClient.get().uri { uriBuilder ->
             uriBuilder.path("/pmode/download").queryParam("partyId", params.partyId)
                     .queryParam("partyIdType", params.partyIdType)
@@ -213,7 +200,7 @@ class CMTConfigSyncService (
                     .build() }
                 .header("Authorization", "Bearer " + getToken())
                 .retrieve()
-                .bodyToMono(ZipData::class.java)
+                .bodyToMono(ZipDataDTO::class.java)
                 .block()
 
         var temp = byteArrayOf()
@@ -225,16 +212,9 @@ class CMTConfigSyncService (
     }
 
     @Transactional
-    fun synchroniseCMTConfig(params: ParticipationParams) {
+    fun synchroniseCMTConfig(params: ParticipationParamsDTO) {
         downloadPModeList(params).forEach { pMode ->
             if (cmtConfigDao.findByCmtName(pMode.name).isEmpty()) {
-                // PMode.toCMTConfiguration(
-                //            zip: ByteArray,
-                //            environment: String,
-                //            project: String,
-                //            party: String,
-                //            pMode: PMode
-                //            )
                 val pModeToSave = mapPModeToCMTConfiguration(
                         zip = downloadZip(pMode, params),
                         environment = params.environment,
@@ -250,7 +230,7 @@ class CMTConfigSyncService (
         }
     }
 
-    class ParticipationDTO () {
+    class ParticipationDTO {
 
         var environment: String = ""
         var project: String = ""
@@ -258,32 +238,14 @@ class CMTConfigSyncService (
 
     }
 
-    // Button mit Funktion hinterlegen
-
+    // Info links:
     // https://docs.spring.io/spring-boot/docs/2.0.x/reference/html/boot-features-kotlin.html
-
     // https://www.predic8.de/bearer-token-autorisierung-api-security.htm#:~:text=Der%20Begriff%20Bearer%20bedeutet%20auf,eine%20bestimmte%20Identit%C3%A4t%20gebunden%20ist.
 
-    /*private fun filterFunction(): ExchangeFilterFunction { (request: ClientRequest, next: ExchangeFunction) ->
-        if(parsedToken.isEmpty()) {
-            webClientTryout()
-        }
-        next.exchange(request)
-    }*/
-
-    /*var filterFunction = ExchangeFilterFunction { request: ClientRequest, next: ExchangeFunction ->
-        if(parsedToken.isEmpty()) {
-            webClientTryout()
-        }
-        next.exchange(request)
-    }*/
-
+    // Useful links:
     // https://www.baeldung.com/spring-webclient-oauth2
-
     // https://docs.spring.io/spring-security/reference/5.6.0-RC1/reactive/integrations/webclient.html
-
     // https://stackoverflow.com/questions/69306969/failing-to-add-client-credentials-clientid-clientsecret-at-spring-webclient-r
-
     // https://stackoverflow.com/questions/59792224/how-to-post-request-with-spring-boot-web-client-for-form-data-for-content-type-a
 
     // Spring Boot & Kotlin Coroutines:

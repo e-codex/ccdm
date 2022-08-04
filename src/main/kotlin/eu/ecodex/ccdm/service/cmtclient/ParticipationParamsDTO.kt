@@ -1,6 +1,6 @@
-package eu.ecodex.ccdm.service
+package eu.ecodex.ccdm.service.cmtclient
 
-class ParticipationParams(
+class ParticipationParamsDTO(
         var partyId: String = "",
         var partyIdType: String = "",
         var environment: String = "",

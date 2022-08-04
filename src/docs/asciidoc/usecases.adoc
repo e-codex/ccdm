@@ -1,0 +1,32 @@
+= Use Cases
+
+
+== U1 Configuration Download
+
+As a user I can download the configuration on CMT, so that I have overview of available CMT configurations.
+
+
+
+== U2 Create Deployment Order
+
+As a user I can create a deployment order for a specific PMode,  environment and component.
+
+As a user I can schedule a deployment order for a specific date (by default go-Live Date of P-Modes).
+
+The CCDM has to be able to execute the deployment order at a specific date/time. And should save the result.
+
+
+== Glossar
+
+=== Component
+
+A component can either be a
+
+* eCodex Connector (DomibusConnector)
+* AS4 Gateway (Domibus)
+* Webserver (Apache)
+* Firewall
+
+
+
+

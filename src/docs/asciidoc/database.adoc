@@ -1,0 +1,40 @@
+= Model
+
+== EntityModel
+
+[plantuml,entity_model]
+----
+@startuml
+
+class CMTEnvironment {
+  id: Integer
+  name: String
+}
+
+class CMTParty {
+  id: Integer
+  partyId: String
+  partyIdTypeKey: String
+  partyIdTypeValue: String
+}
+
+
+class CMTConfiguration {
+  id: Integer
+  cmtName: String
+  environment: String
+  project: String
+  party: String
+  version: String
+  goLiveDate: LocalDateTime
+
+}
+
+class CMTConfigDeploymentOrder {
+}
+
+CMTConfiguration -- CMTConfigDeploymentOrder
+
+
+@enduml
+----

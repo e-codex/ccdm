@@ -1,8 +1,8 @@
-package eu.ecodex.ccdm.service
+package eu.ecodex.ccdm.service.cmtclient
 
 import java.time.LocalDateTime
 
-class PMode (
+class PModeDTO (
         var name: String = "",
         var creationDate: LocalDateTime = LocalDateTime.now(),
         var createdBy: String = "",

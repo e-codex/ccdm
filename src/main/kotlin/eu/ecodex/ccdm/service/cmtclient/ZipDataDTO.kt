@@ -1,6 +1,6 @@
-package eu.ecodex.ccdm.service
+package eu.ecodex.ccdm.service.cmtclient
 
-class ZipData (
+class ZipDataDTO (
         var name: String = "",
         var creationDate: String = "",
         var createdBy: String = "",

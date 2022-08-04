@@ -33,7 +33,7 @@ class CMTConfigurationDaoTests {
                 cmtName = "econimus",
                 environment = "Downunder",
                 project = "FuzzyLogic",
-                party = "Confusio",
+                partyId = "Confusio",
                 version = "99",
                 downloadDate = LocalDateTime.now(),
                 publishDate = LocalDateTime.of(2020, 8, 3, 0, 0),

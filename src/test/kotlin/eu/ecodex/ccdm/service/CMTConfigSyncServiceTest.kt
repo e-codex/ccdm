@@ -1,6 +1,7 @@
 package eu.ecodex.ccdm.service
 
 import eu.ecodex.ccdm.dao.CMTConfigurationDao
+import eu.ecodex.ccdm.service.cmtclient.ParticipationParamsDTO
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -34,8 +35,8 @@ import org.springframework.test.context.jdbc.Sql
     @Test
     @Sql("classpath:deleteDB.sql")
     fun synchronisePModeListTest() {
-        val params = ParticipationParams(
-                partyId = "5",
+        val params = ParticipationParamsDTO(
+                partyId = "AT",
                 partyIdType = "asdf",
                 environment = "home",
                 project = "test project"
@@ -50,8 +51,8 @@ import org.springframework.test.context.jdbc.Sql
     }
 
     @Test
-    fun downloadParticipantListTest () {
-        service.downloadParticipantListForParty(service.getParties(service.downloadPartyList()))
+    fun synchronisePartyWithDb () {
+        service.syncPartiesToDB();
     }
 
 }

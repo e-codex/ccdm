@@ -1,4 +1,4 @@
-package eu.ecodex.ccdm.service.deploymentorderexecutor
+package eu.ecodex.ccdm.deploymentorder.service
 
 import eu.ecodex.ccdm.entity.ComponentDeploymentOrder
 import org.springframework.stereotype.Service

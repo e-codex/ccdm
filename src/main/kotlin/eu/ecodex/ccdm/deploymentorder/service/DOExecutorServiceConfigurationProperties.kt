@@ -1,4 +1,4 @@
-package eu.ecodex.ccdm.service.deploymentorderexecutor
+package eu.ecodex.ccdm.deploymentorder.service
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 import javax.validation.constraints.NotBlank

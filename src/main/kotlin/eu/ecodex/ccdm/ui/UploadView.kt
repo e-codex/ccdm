@@ -9,6 +9,7 @@ import com.vaadin.flow.component.formlayout.FormLayout
 import com.vaadin.flow.component.grid.Grid
 import com.vaadin.flow.component.icon.Icon
 import com.vaadin.flow.component.icon.VaadinIcon
+import com.vaadin.flow.component.listbox.MultiSelectListBox
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment
 import com.vaadin.flow.component.orderedlayout.VerticalLayout
 import com.vaadin.flow.data.provider.DataProvider

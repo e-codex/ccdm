@@ -25,9 +25,9 @@ internal class DomibusGatewayDeploymentDriverTest(private val gwDriver : Domibus
     @Test
     fun runDeployment() {
 
-        CMTConfiguration cmtConfiguration = CMTConfiguration()
-
-        gwDriver.runDeployment(gwComponent, )
+//        CMTConfiguration cmtConfiguration = CMTConfiguration()
+//
+//        gwDriver.runDeployment(gwComponent, )
     }
 
     @Test

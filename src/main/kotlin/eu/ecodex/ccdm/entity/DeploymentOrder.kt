@@ -12,7 +12,7 @@ data class DeploymentOrder(
         @Column(name = "id")
         val id: Int?=null,
 
-        @ManyToOne(fetch = FetchType.LAZY, cascade = arrayOf(CascadeType.ALL))
+        @ManyToOne
         @JoinColumn(name = "config_id")
         val config: CMTConfiguration,
 

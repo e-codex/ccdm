@@ -109,9 +109,3 @@ class DeploymentOrderView(
         goLiveDate.value = selectedConfig!!.publishDate.plusDays(7)
     }
 }
-
-// New feature coming soon: https://vaadin.com/docs/latest/components/multi-select-combo-box
-// using parameters with views: https://vaadin.com/docs/v8/framework/articles/UsingParametersWithViews
-// pass parameters via URL: https://vaadin.com/docs/v14/flow/routing/tutorial-router-url-parameters
-// https://www.baeldung.com/kotlin/spring-boot-kotlin-coroutines
-// read up on coroutines: https://kotlinlang.org/docs/coroutines-basics.html

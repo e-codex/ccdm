@@ -22,8 +22,3 @@ class DeploymentOrderListView (
         add(grid)
     }
 }
-
-// Qs:
-// how to fix: .LazyInitializationException: failed to lazily initialize
-// a collection of role: eu.ecodex.ccdm.entity.CMTConfiguration.configDeployments, could not initialize proxy - no Session
-// what kinds of issues should be shown to user? -> try catch? Notification?

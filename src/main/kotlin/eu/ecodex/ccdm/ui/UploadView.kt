@@ -87,8 +87,4 @@ class UploadView(
         add(syncButtonLayout, formLayout, grid)
     }
 
-    // https://vaadin.com/docs/v14/flow/routing/tutorial-router-url-parameters
-    // https://stackoverflow.com/questions/51533838/vaadin-pass-parameter-to-view
-    // when done: pull request -> bitbucket
-
 }

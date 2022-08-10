@@ -18,6 +18,7 @@ class MainUI: AppLayout() {
     //private val tabToViewMap = mutableMapOf<Tab, Class<out Component>>()
     private val dashboardTab = Tab(VaadinIcon.DASHBOARD.create(), Span("Dashboard"))
     private val updateTab = Tab(VaadinIcon.REFRESH.create(), Span("Update"))
+    private val deploymentOrderTab = Tab(VaadinIcon.LIST_OL.create(), Span ("Deployment Orders"))
 
         init {
             val toggle = DrawerToggle()
@@ -30,7 +31,7 @@ class MainUI: AppLayout() {
              val selectedTab = mapOf(dashboardTab to DashboardView::class.java, updateTab to UploadView::class.java)
              tabToViewMap.putAll(selectedTab)*/
 
-            val tabs = Tabs(dashboardTab, updateTab)
+            val tabs = Tabs(dashboardTab, updateTab, deploymentOrderTab)
             tabs.orientation = Tabs.Orientation.VERTICAL
 
             tabs.addSelectedChangeListener(this::selectedTabChanged)
@@ -46,6 +47,7 @@ class MainUI: AppLayout() {
         when (event.selectedTab) {
             dashboardTab -> UI.getCurrent().navigate(DashboardView::class.java)
             updateTab -> UI.getCurrent().navigate(UploadView::class.java)
+            deploymentOrderTab -> UI.getCurrent().navigate(DeploymentOrderListView::class.java)
         }
     }
 }

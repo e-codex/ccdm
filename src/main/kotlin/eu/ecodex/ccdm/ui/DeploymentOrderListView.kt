@@ -8,7 +8,7 @@ import eu.ecodex.ccdm.entity.DeploymentOrder
 
 @Route("/deploymentOrderList", layout = MainUI::class)
 class DeploymentOrderListView (
-    val deploymentDao: DeploymentOrderDao
+    deploymentDao: DeploymentOrderDao
         ): VerticalLayout() {
 
     init {
@@ -16,8 +16,14 @@ class DeploymentOrderListView (
         grid.addClassName("deploymentOrder-grid")
         grid.setSizeFull()
         grid.isAllRowsVisible = true
-        //deploymentDao.findAll()
+        grid.setColumns("config", "deploymentDate")
+        grid.setItems(deploymentDao.findAll())
 
+        add(grid)
     }
-
 }
+
+// Qs:
+// how to fix: .LazyInitializationException: failed to lazily initialize
+// a collection of role: eu.ecodex.ccdm.entity.CMTConfiguration.configDeployments, could not initialize proxy - no Session
+// what kinds of issues should be shown to user? -> try catch? Notification?

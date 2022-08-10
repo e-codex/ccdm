@@ -1,7 +1,9 @@
 package eu.ecodex.ccdm.ui
 
 import com.github.mvysny.karibudsl.v10.onLeftClick
-import com.github.mvysny.karibudsl.v10.refresh
+import com.github.mvysny.karibudsl.v10.textField
+import com.vaadin.flow.component.ComponentUtil
+import com.vaadin.flow.component.Text
 import com.vaadin.flow.component.UI
 import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.combobox.ComboBox
@@ -12,17 +14,27 @@ import com.vaadin.flow.component.icon.VaadinIcon
 import com.vaadin.flow.component.listbox.MultiSelectListBox
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment
 import com.vaadin.flow.component.orderedlayout.VerticalLayout
-import com.vaadin.flow.data.provider.DataProvider
+import com.vaadin.flow.component.textfield.TextField
+import com.vaadin.flow.data.binder.BeanValidationBinder
+import com.vaadin.flow.data.binder.Binder
+import com.vaadin.flow.router.BeforeEvent
+import com.vaadin.flow.router.HasUrlParameter
+import com.vaadin.flow.router.NavigationEvent
 import com.vaadin.flow.router.Route
+import com.vaadin.flow.router.RouteConfiguration
+import com.vaadin.flow.router.RouteParam
+import com.vaadin.flow.router.RouteParameters
 import eu.ecodex.ccdm.dao.CMTConfigurationDao
 import eu.ecodex.ccdm.entity.CMTConfiguration
 import eu.ecodex.ccdm.service.CMTConfigSyncService
 import org.springframework.data.domain.PageRequest
+import javax.swing.SingleSelectionModel
 
 @Route(value = "/upload", layout = MainUI::class)
-class UploadView(configDao: CMTConfigurationDao,
-                 cmtSyncService: CMTConfigSyncService
-                 ): VerticalLayout()  {
+class UploadView(
+    configDao: CMTConfigurationDao,
+    cmtSyncService: CMTConfigSyncService
+                 ): VerticalLayout() {
 
     init {
         val syncButton = Button(VaadinIcon.REFRESH.create())
@@ -36,10 +48,7 @@ class UploadView(configDao: CMTConfigurationDao,
         // https://vaadin.com/docs/v14/flow/binding-data/tutorial-flow-data-provider/#lazy-loading-data-from-a-backend-service
         syncButtonLayout.alignItems = Alignment.END
 
-        // data provider tryout
-        // data provider tryout end
-
-        val project = ComboBox<String>()
+        val project = ComboBox<CMTConfiguration>()
         val environment = ComboBox<String>()
 
         val formLayout = FormLayout()
@@ -56,11 +65,11 @@ class UploadView(configDao: CMTConfigurationDao,
         grid.isAllRowsVisible = true
         grid.columns.forEach() { col -> col.setAutoWidth(true) }
 
-        // if label for Deployment column needed: probably need to change to addColumn and add ComponentRenderer instead of addComponentColumn,
-        // see code: https://vaadin.com/docs/latest/components/grid/#dynamic-height
-        grid.addComponentColumn {
+        grid.addComponentColumn { cmtConfig ->
+
             Button(Icon("lumo", "chevron-right")) {
-                println(it)
+
+                UI.getCurrent().navigate(DeploymentOrderView::class.java, cmtConfig.configId)
             }
         }
 
@@ -75,6 +84,7 @@ class UploadView(configDao: CMTConfigurationDao,
             cmtSyncService.synchronise()
             grid.dataProvider.refreshAll()
         }
+
         add(syncButtonLayout, formLayout, grid)
     }
 

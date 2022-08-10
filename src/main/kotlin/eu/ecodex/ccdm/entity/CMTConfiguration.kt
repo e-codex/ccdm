@@ -57,4 +57,8 @@ data class CMTConfiguration (
         val zip: ByteArray
         ) {
 
+        override fun toString(): String {
+                return "CMTConfig: name: $cmtName"
+        }
+
 }

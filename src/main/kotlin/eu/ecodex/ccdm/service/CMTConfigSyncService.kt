@@ -14,29 +14,35 @@ import org.springframework.data.domain.Example
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.reactive.function.BodyInserters
+import org.springframework.web.reactive.function.client.ClientRequest
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction
+import org.springframework.web.reactive.function.client.ExchangeFunction
 import org.springframework.web.reactive.function.client.WebClient
 import java.time.LocalDateTime
 import java.util.*
 
 @Service
-class CMTConfigSyncService (
-        private val config: CMTConfigSyncServiceConfigurationProperties,
-        private val cmtConfigDao: CMTConfigurationDao,
-        private val partyDao: CMTPartyDao
+class CMTConfigSyncService(
+    config: CMTConfigSyncServiceConfigurationProperties,
+    private val cmtConfigDao: CMTConfigurationDao,
+    private val partyDao: CMTPartyDao,
+
 ) {
 
+    private final val webClientFilter = WebClientFilter(config)
     val logger: Logger = LoggerFactory.getLogger(CMTConfigSyncService::class.java)
 
-    private val keycloakClient = WebClient.builder()
+    /*private val keycloakClient = WebClient.builder()
             .baseUrl(config.keycloakUrl)
-            .build()
+            //.filter(filterFunction)
+            .build()*/
 
     private val cmtClient = WebClient.builder()
             .baseUrl(config.cmtUrl)
             .codecs { configurer -> configurer.defaultCodecs().maxInMemorySize(1024 * 10000) }
             .build()
 
-    fun getToken(): String {
+    /*fun getToken(): String {
 
         val block = keycloakClient.post()
                 .uri(config.keycloakUrl)
@@ -56,13 +62,13 @@ class CMTConfigSyncService (
         return parsedToken
 
         // Json parsing: https://stackoverflow.com/questions/2591098/how-to-parse-json-in-java
-    }
+    }*/
 
     fun downloadPartyList(): MutableList<CMTParty> {
         val downloadedPartyList = cmtClient.get().uri { uriBuilder ->
             uriBuilder.path("/party/list").build()
         }
-                .header("Authorization", "Bearer " + getToken())
+                .header("Authorization", "Bearer " + webClientFilter.filterFunction)
                 .retrieve()
                 .bodyToFlux(CMTParty::class.java)
                 .collectList()
@@ -117,7 +123,7 @@ class CMTConfigSyncService (
                     .build()
             // pass parameters to build()? See: https://www.baeldung.com/webflux-webclient-parameters
         }
-                .header("Authorization", "Bearer " + getToken())
+                .header("Authorization", "Bearer " + webClientFilter.filterFunction)
                 .retrieve()
                 .bodyToFlux(ParticipationDTO::class.java)
                 .map { dtoParams ->
@@ -149,7 +155,7 @@ class CMTConfigSyncService (
                     .queryParam("environment", params.environment)
                     .queryParam("project", params.project)
                     .build() }
-                .header("Authorization", "Bearer " + getToken())
+                .header("Authorization", "Bearer " + webClientFilter.filterFunction)
                 .retrieve()
                 .bodyToFlux(PModeDTO::class.java)
                 .collectList()
@@ -198,7 +204,7 @@ class CMTConfigSyncService (
                     .queryParam("project", params.project)
                     .queryParam("version", pMode.version)
                     .build() }
-                .header("Authorization", "Bearer " + getToken())
+                .header("Authorization", "Bearer " + webClientFilter.filterFunction)
                 .retrieve()
                 .bodyToMono(ZipDataDTO::class.java)
                 .block()

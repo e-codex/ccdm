@@ -21,8 +21,7 @@ import java.util.*
 class CMTConfigSyncService(
     config: CMTConfigSyncServiceConfigurationProperties,
     private val cmtConfigDao: CMTConfigurationDao,
-    private val partyDao: CMTPartyDao,
-
+    private val partyDao: CMTPartyDao
 ) {
 
     private final val webClientFilter = WebClientFilter(config)

@@ -18,10 +18,12 @@ import org.springframework.test.context.jdbc.Sql
     @Autowired
     lateinit var cmtConfigDao: CMTConfigurationDao
 
-    @Test
+
+
+    /*@Test
     fun webClientTest() {
         service.getToken()
-    }
+    }*/
 
     @Test
     fun filterTest() {

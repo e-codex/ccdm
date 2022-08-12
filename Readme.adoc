@@ -1,0 +1,53 @@
+= CCDM Cmt Configuration Deployment Manager
+
+== Purpose
+
+This project should become a tool to automate and track configuration updates from CMT and deploy them on the e-codex components.
+
+
+[plantuml,purpose]
+----
+@startuml
+
+component cmt
+
+rectangle "internal infrastructure" {
+  component ccdm
+    rectangle {
+        component connector
+        component gw
+        component webserver
+        component firewall
+    }
+}
+
+ccdm --> cmt : download current configuration
+
+ccdm --> connector : deploy configuration
+ccdm --> gw : deploy configuration
+ccdm --> webserver : deploy configuration
+ccdm --> firewall : deploy configuration
+
+@enduml
+----
+
+== Current state
+
+Currently this project is just a prototype. It has been developed by a student during summer. It comes with no support from e-Codex.
+
+Anyway pull requests are welcome.
+
+== Run
+
+Adapt application.properties under
+src/main/resources/application.properties
+to your environment and run application:
+
+----
+./gradlew bootRun
+----
+
+== License
+
+The project is licensed under EUPL 1.2
+
